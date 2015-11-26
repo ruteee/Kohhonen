@@ -18,22 +18,20 @@ public:
 	double distancia;
 
 	void inicializar_vetor_de_pesos(int size);
-	void setDistancia(double distancia){
-		this->distancia = distancia;
-	}
+
+	void setDistancia(double distancia);
+	
 	void setLocalizacao(int i, int j);
 
-	void setPeso(double peso, int i){
-		this->vetor_de_pesos[i] = peso;
-	}
+	void setPeso(double peso, int i);
 
-	double getPeso(int i){
-		return this->vetor_de_pesos[i];
-	}
+	double getPeso(int i);
 
-	double getDistancia(){
-		return this->distancia;
-	}
+	int getX();
+
+	int getY();
+
+	double getDistancia();
 
 };
 

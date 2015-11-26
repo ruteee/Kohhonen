@@ -21,6 +21,7 @@ public:
 	double** matriz_de_entradas;
 	bool falha = false;
 	int numero_colunas;
+	int numero_linhas;
 
 
 	Arquivo(string arquivo);
