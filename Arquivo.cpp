@@ -13,7 +13,7 @@ Arquivo::Arquivo(string arquivo) {
 	this->arquivo = arquivo;
 	this-> escritor = escritor(arquivo);
 	this-> leitor = leitor(arquivo);
-
+	this -> falha = false;
 	if(!leitor.is_open()){
 		cout<<"Falha ao abrir o arquivo";
 		this->falha = true;

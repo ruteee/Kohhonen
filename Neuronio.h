@@ -18,6 +18,8 @@ public:
 	double distancia;
 
 	void inicializar_vetor_de_pesos(int size);
+	
+	double* get_vetor_de_pesos();
 
 	void setDistancia(double distancia);
 	

@@ -19,12 +19,13 @@ public:
 	ofstream escritor;
 	ifstream leitor;
 	double** matriz_de_entradas;
-	bool falha = false;
+	bool falha;
 	int numero_colunas;
 	int numero_linhas;
 
 
 	Arquivo(string arquivo);
+	Arquivo();
 
 	void escrever_em_arquivo(ofstream arquivo);
 
