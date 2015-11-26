@@ -9,10 +9,10 @@
 
 using namespace std;
 
-Arquivo::Arquivo(string arquivo) {
-	this->arquivo = arquivo;
-	this-> escritor = escritor(arquivo);
-	this-> leitor = leitor(arquivo);
+Arquivo::Arquivo(char* arquivo) {
+	this -> arquivo = arquivo;
+	this -> escritor.open(arquivo);
+	this -> leitor.open(arquivo);
 	this -> falha = false;
 	if(!leitor.is_open()){
 		cout<<"Falha ao abrir o arquivo";
@@ -21,8 +21,6 @@ Arquivo::Arquivo(string arquivo) {
 }
 
 void Arquivo::ler_do_arquivo(){
-
-
 	int numero_colunas;
 	int numero_linhas;
 	int iterador_linhas= 0;

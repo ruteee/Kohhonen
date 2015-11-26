@@ -24,7 +24,7 @@ public:
 	int numero_linhas;
 
 
-	Arquivo(string arquivo);
+	Arquivo(char* arquivo);
 	Arquivo();
 
 	void escrever_em_arquivo(ofstream arquivo);

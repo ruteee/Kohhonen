@@ -12,14 +12,13 @@
 using namespace std;
 int altura, largura;
 double distancia;
-string arquivo;
+char* arquivo;
 Arquivo* arquivo_entrada;
 
 Neuronio** grid_de_neuronios;
 
 struct Vencedor{
 	Neuronio neuronio;
-
 };
 
 Vencedor neuronio_vencedor;

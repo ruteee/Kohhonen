@@ -12,6 +12,13 @@
 #include <time.h>
 
 
+Neuronio::Neuronio(){
+
+}
+
+Neuronio::~Neuronio(){
+
+}
 
 void Neuronio::inicializar_vetor_de_pesos(int size){
 	this->vetor_de_pesos = new double[size];
@@ -21,7 +28,7 @@ void Neuronio::inicializar_vetor_de_pesos(int size){
 		vetor_de_pesos[i] = (rand()/10)%1;
 }
 
-double* get_vetor_de_pesos(){
+double* Neuronio::get_vetor_de_pesos(){
 	return this->vetor_de_pesos;
 }
 
@@ -38,7 +45,7 @@ double Neuronio::getPeso(int i){
 	return this->vetor_de_pesos[i];
 }
 
-void setDistancia(double distancia){
+void Neuronio::setDistancia(double distancia){
 	this->distancia = distancia;
 }
 
@@ -46,10 +53,10 @@ double Neuronio::getDistancia(){
 	return this->distancia;
 }
 
-int getX(){
+int Neuronio::getX(){
 	return this->i;
 }
 
-int getY(){
+int Neuronio::getY(){
 	return this->j;
 }
