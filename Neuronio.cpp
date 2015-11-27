@@ -25,7 +25,7 @@ void Neuronio::inicializar_vetor_de_pesos(int size){
 
 	srand(time(NULL));
 	for(int i = 0; i<size; i++)
-		vetor_de_pesos[i] = (rand()/10)%1;
+		vetor_de_pesos[i] = (rand()%10)/10.0;
 }
 
 double* Neuronio::get_vetor_de_pesos(){

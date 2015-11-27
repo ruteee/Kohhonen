@@ -11,7 +11,7 @@ using namespace std;
 
 Arquivo::Arquivo(char* arquivo) {
 	this -> arquivo = arquivo;
-	this -> escritor.open(arquivo);
+	//this -> escritor.open(arquivo);
 	this -> leitor.open(arquivo);
 	this -> falha = false;
 	if(!leitor.is_open()){
@@ -21,7 +21,7 @@ Arquivo::Arquivo(char* arquivo) {
 }
 
 void Arquivo::ler_do_arquivo(){
-	int numero_colunas;
+	int numero_colunas ;
 	int numero_linhas;
 	int iterador_linhas= 0;
 
@@ -29,18 +29,18 @@ void Arquivo::ler_do_arquivo(){
 	leitor >> numero_colunas;
 
 	this->numero_colunas = numero_colunas;
+	this->numero_linhas = numero_linhas;
 
 
-	double entradas[numero_colunas];
+	
 
 	this->matriz_de_entradas = new double *[numero_linhas];
 
 	while(iterador_linhas< numero_linhas){
-
+		this->matriz_de_entradas[iterador_linhas] = new double[numero_colunas];
+	
 		for(int i = 0; i < numero_colunas; i++)
-			leitor >> entradas[i];
-
-		matriz_de_entradas[iterador_linhas] = entradas;
+			leitor >> matriz_de_entradas[iterador_linhas][i];//  entradas[i];
 		iterador_linhas++;
 	}
 }
