@@ -128,7 +128,7 @@ int main(int argc, char* argv[] ){
 	cout << "set do vetor de pesos"<<endl;
 
 	treinamento(
-				0.8,
+				0.05,
 				1000,
 				0.05,
 				100,
@@ -139,7 +139,7 @@ int main(int argc, char* argv[] ){
 				arquivo_entrada->matriz_de_entradas,
 				grid_de_neuronios);
 	
-	testeDeRede(255, 0, 0, altura, largura, grid_de_neuronios);
+	testeDeRede(51, 255, 153, altura, largura, grid_de_neuronios);
 
 
 
@@ -172,9 +172,10 @@ void treinamento(
 
     	while(count_entradas < arquivo_entrada->numero_linhas){    	
     	/*Parallel begin*/
-    		cout << "while"<<endl;
+    		//cout << "while"<<endl;
+    		int size = largura*altura;
 			#pragma omp parallel for num_threads(threads_count)
-	    	for(int i = 0; i < altura*largura; i++){
+	    	for(int i = 0; i < size; i++){
 	    		
 	    		//for(int j = 0; j < largura; j++){
 	    			distancia =
@@ -193,7 +194,7 @@ void treinamento(
 	    	int menor_index_x = 0, menor_index_y = 0;
 
 	    	#pragma omp parallel for num_threads(threads_count)
-	    	for(int i = 0; i < altura*largura; i++){
+	    	for(int i = 0; i < size; i++){
 	    	    //for(int j = 0; j < largura; j++){
 
 	    	    	if(grid_de_neuronios[i/largura][i%largura].getDistancia() < menor_distancia){
@@ -214,18 +215,18 @@ void treinamento(
 			double** container_de_pesos_antigos = new double*[altura*largura];
 			int count_neuronios = 0;
 			#pragma omp parallel for num_threads(threads_count)
-			for(int i = 0; i < altura*largura; i++){
+			for(int i = 0; i < size; i++){
 				//for(int j = 0; j< largura; j++){
 					if(i/largura == vencedor.neuronio.getX() && i%largura == vencedor.neuronio.getY()){
 
-						double* vetor_de_pesos_antigos = new double[arquivo_entrada->numero_colunas];
+						double* vetor_de_pesos_antigos ;//= new double[arquivo_entrada->numero_colunas];
 							vetor_de_pesos_antigos = grid_de_neuronios[i/largura][i%largura].get_vetor_de_pesos();
 							container_de_pesos_antigos[count_neuronios] = vetor_de_pesos_antigos;
 
 						for(int k = 0; k < arquivo_entrada->numero_colunas; k++){
 							//modo vencedor
 							double peso = grid_de_neuronios[i/largura][i%largura].getPeso(k) + 
-										n*((-1)*grid_de_neuronios[i/largura][i%largura].getPeso(k)  + matriz_de_entradas[count_entradas][k]);
+										n*(matriz_de_entradas[count_entradas][k] - grid_de_neuronios[i/largura][i%largura].getPeso(k));
 							grid_de_neuronios[i/largura][i%largura].setPeso(peso, k);
 						}
 					}else{
@@ -236,7 +237,7 @@ void treinamento(
 						for(int k = 0; k <  arquivo_entrada->numero_colunas; k++){
 							double peso = grid_de_neuronios[i/largura][i%largura].getPeso(k) + 
 									n*funcao_de_vizinhanca(sigma_k, vencedor.neuronio, count_epoca, i/largura, i%largura)*
-									((-1)*grid_de_neuronios[i/largura][i%largura].getPeso(k)  + matriz_de_entradas[count_entradas][k]);
+									((matriz_de_entradas[count_entradas][k] - grid_de_neuronios[i/largura][i%largura].getPeso(k)));
 							grid_de_neuronios[i/largura][i%largura].setPeso(peso, k);
 						}
 					}
@@ -249,7 +250,7 @@ void treinamento(
 			
 			
 			#pragma omp parallel for num_threads(threads_count)
-			for(int i = 0; i < altura*largura; i++){
+			for(int i = 0; i < size; i++){
 				for(int k = 0; k < arquivo_entrada->numero_colunas; k++){
 					variacao += (grid_de_neuronios[i/largura][i%largura].get_vetor_de_pesos())[k] - container_de_pesos_antigos[0][k];
 				}
@@ -267,27 +268,24 @@ void treinamento(
 		}
 	/*parallel end*/
 
-		cout << "after while"<<endl;
+		cout << count_epoca <<endl;
 		//sigma_k = sigma*exp(-count_epoca/qsi); 
 		count_epoca++;
 		count_entradas = 0;
 		
 		//shuffle
-		/*double** matriz_shuffled = new double*[altura];
+		double** matriz_shuffled = new double*[altura];
 		
-		for(int j = 0; j < altura; j++){
-				matriz_shuffled[j] = new double[largura];
-		}
-
+		
 		matriz_shuffled = shuffle(matriz_de_entradas, altura, largura);
 
 		for(int i = 0; i < altura; i++){
-			for(int j = 0; j < altura; j++){
+			for(int j = 0; j < largura; j++){
 				matriz_de_entradas[i][j] = matriz_shuffled[i][j];
 			}
 		}
 
-		free(matriz_shuffled);*/
+		free(matriz_shuffled);
 
 
     }while(count_epoca < epocas /*&& variacao_media > variacao_minima_media*/);
@@ -313,8 +311,8 @@ double funcao_de_vizinhanca(double sigma, Neuronio vencedor, int iteracao, int x
 				pow((neuronio_vencedor.neuronio.getY() - grid_de_neuronios[x_neuronio_atual][y_neuronio_atual].getY()), 2);
 	
 	//h_site = alfa*exp(-distancia_quadrada/(2*alfa));
-	h = distancia_quadrada/exp(2*pow(sigma,2));
-	//h = 0.0;
+	//h = distancia_quadrada/exp(2*pow(sigma,2));
+	h = 0.0;
 	return h;
 
 }
@@ -378,13 +376,16 @@ double** shuffle(double** matriz_to_shuffle, int altura, int largura){
 		matriz_shuffled[i] = new double[largura];
 
 	bool* vetor_flags = new bool[altura];
+	for(int i = 0; i < altura; i++)
+		vetor_flags[i] = false;
 
 	int nova_posicao;
 	
 	for(int i = 0; i < altura; i++){
-
+	//	cout << i<<endl;
 		nova_posicao = rand()%altura;
 		while(vetor_flags[nova_posicao]){
+
 			nova_posicao = rand()%altura;
 		}
 		matriz_shuffled[nova_posicao] = matriz_to_shuffle[i];
