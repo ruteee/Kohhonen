@@ -27,7 +27,7 @@ public:
 	Arquivo(char* arquivo);
 	Arquivo();
 
-	void escrever_em_arquivo(ofstream arquivo);
+	void escrever_no_arquivo();
 
 	void ler_do_arquivo();
 

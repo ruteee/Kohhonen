@@ -11,7 +11,7 @@ using namespace std;
 
 Arquivo::Arquivo(char* arquivo) {
 	this -> arquivo = arquivo;
-	//this -> escritor.open(arquivo);
+	this -> escritor.open("Pesos");
 	this -> leitor.open(arquivo);
 	this -> falha = false;
 	if(!leitor.is_open()){
@@ -43,6 +43,13 @@ void Arquivo::ler_do_arquivo(){
 			leitor >> matriz_de_entradas[iterador_linhas][i];//  entradas[i];
 		iterador_linhas++;
 	}
+
+	leitor.close();
+}
+
+void Arquivo::escrever_no_arquivo(){
+
+
 }
 
 
