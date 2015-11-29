@@ -8,6 +8,7 @@
 #include <locale>
 #include <ctype.h>
 #include <cstdlib>
+#include "timer.h"
 using namespace std;
 
 int altura, largura;
@@ -134,7 +135,9 @@ void treinamento(
 
     int count_epoca = 0;
     double sigma_k = sigma;
+    double inicio, fim, tempo_passado;
 
+    GET_TIME(inicio);
    
     do{
     	int count_entradas = 0;
@@ -209,8 +212,12 @@ void treinamento(
 		free(matriz_shuffled);
 
     }while(count_epoca < epocas);
-
+    GET_TIME(fim);
+    tempo_passado = fim - inicio;
+    cout << "Tempo decorrido: "<< tempo_passado<<endl;
 }
+
+
 
 
 double calcular_distancia_euclidiana(double* entrada, double* pesos, int size){
