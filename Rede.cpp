@@ -160,9 +160,7 @@ void treinamento(
 				Neuronio** grid_de_neuronios){
 
     int count_epoca = 0;
-    double variacao = 0;
     double sigma_k = sigma;
-    double variacao_media = 0;
 
    
     do{
@@ -193,7 +191,8 @@ void treinamento(
 	    	double menor_distancia = grid_de_neuronios[0][0].getDistancia();
 	    	int menor_index_x = 0, menor_index_y = 0;
 
-	    	#pragma omp parallel for num_threads(threads_count)
+	    	//#pragma omp parallel for num_threads(threads_count)
+	    		//private(largura)
 	    	for(int i = 0; i < size; i++){
 	    	    //for(int j = 0; j < largura; j++){
 
@@ -215,14 +214,10 @@ void treinamento(
 			double** container_de_pesos_antigos = new double*[altura*largura];
 			int count_neuronios = 0;
 			#pragma omp parallel for num_threads(threads_count)
+				//private(largura, matriz_de_entradas, grid_de_neuronios);
 			for(int i = 0; i < size; i++){
 				//for(int j = 0; j< largura; j++){
 					if(i/largura == vencedor.neuronio.getX() && i%largura == vencedor.neuronio.getY()){
-
-						double* vetor_de_pesos_antigos ;//= new double[arquivo_entrada->numero_colunas];
-							vetor_de_pesos_antigos = grid_de_neuronios[i/largura][i%largura].get_vetor_de_pesos();
-							container_de_pesos_antigos[count_neuronios] = vetor_de_pesos_antigos;
-
 						for(int k = 0; k < arquivo_entrada->numero_colunas; k++){
 							//modo vencedor
 							double peso = grid_de_neuronios[i/largura][i%largura].getPeso(k) + 
@@ -230,10 +225,6 @@ void treinamento(
 							grid_de_neuronios[i/largura][i%largura].setPeso(peso, k);
 						}
 					}else{
-						double* vetor_de_pesos_antigos = new double[arquivo_entrada->numero_colunas];
-						vetor_de_pesos_antigos = grid_de_neuronios[i/largura][i%largura].get_vetor_de_pesos();
-						container_de_pesos_antigos[count_neuronios] = vetor_de_pesos_antigos;
-
 						for(int k = 0; k <  arquivo_entrada->numero_colunas; k++){
 							double peso = grid_de_neuronios[i/largura][i%largura].getPeso(k) + 
 									n*funcao_de_vizinhanca(sigma_k, vencedor.neuronio, count_epoca, i/largura, i%largura)*
@@ -245,25 +236,6 @@ void treinamento(
 				count_neuronios++;
 			
 			}
-
-			count_neuronios = 0;
-			
-			
-			#pragma omp parallel for num_threads(threads_count)
-			for(int i = 0; i < size; i++){
-				for(int k = 0; k < arquivo_entrada->numero_colunas; k++){
-					variacao += (grid_de_neuronios[i/largura][i%largura].get_vetor_de_pesos())[k] - container_de_pesos_antigos[0][k];
-				}
-				count_neuronios++;
-			}
-
-			variacao_media = variacao/count_neuronios;
-			variacao = 0;
-			
-			count_neuronios = 0;
-			variacao_media = 0;
-
-
 			count_entradas++;
 		}
 	/*parallel end*/
@@ -296,7 +268,7 @@ void treinamento(
 double calcular_distancia_euclidiana(double* entrada, double* pesos, int size){
 
 	double distancia = 0;
-	#pragma omp parallel for num_threads(threads_count)
+	//#pragma omp parallel for num_threads(threads_count)
 	for(int i = 0; i < size; i++)
 		distancia += pow((entrada[i] - pesos[i]), 2);
 	return distancia;
@@ -331,8 +303,7 @@ void testeDeRede(double R, double G, double B, int num_linhas, int num_colunas, 
 		//for(int j = 0; j < num_colunas; j++){
 			distancia =
 				calcular_distancia_euclidiana(entrada, grid_de_neuronios[i/num_colunas][i%num_colunas].vetor_de_pesos, 3);
-				vetor_de_distancias[count_neuronios] = distancia;
-				count_neuronios++;
+				vetor_de_distancias[i] = distancia;
 		//}
 	}
 
@@ -340,8 +311,8 @@ void testeDeRede(double R, double G, double B, int num_linhas, int num_colunas, 
 	int menor_index_x = 0, menor_index_y = 0;
 
 
-	#pragma omp parallel for num_threads(threads_count)
-	for(int i = 0; i < count_neuronios; i++){
+	//#pragma omp parallel for num_threads(threads_count)
+	for(int i = 0; i < num_linhas*num_colunas; i++){
 		if(vetor_de_distancias[i] < menor_distancia){
 			menor_distancia = vetor_de_distancias[i];
 			menor_index_x = i/num_colunas;
